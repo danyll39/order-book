@@ -1,58 +1,56 @@
-const reconcileOrder = (ex, incoming) => {
-  // let balanceBook = (existingBook, index) => {
-  //   existingBook.map((order) => {
-  //     // console.log(existingBook)
-  //     if (existingBook[0].type !== order.type && existingBook[0].price === order.price){
-  //       // remove the found matching order
-  //       existingBook.splice(index, existingBook.length-1)
-        
-  //     } 
-  //     return existingBook
-      
-  //   })
+const reconcileOrder = (existing, incoming) => {
+  const newBook = []
+  for(let i = existing.length - 1; i >= 0; i--) {
+    if(incoming.type !== existing[i].type && incoming.price === existing[i].price && incoming.quantity === existing[i].quantity){
+      existing.splice(i, 1)
+      i++
+      incoming === 0
+    } else if (incoming.type !== existing[i].type && incoming.price === existing[i].price && incoming.quantity < existing[i].quantity){
+      existing[i].quantity = existing[i].quantity - incoming.quantity
+      incoming === 0
+      existing.push(existing[i])
+      existing.splice(i, 1)
 
-  // }
-  console.log(ex)
-  console.log('++++++++++++')
-  console.log(incoming)
- 
-  if(ex.length === 0){
-    ex.push(incoming)
-    return ex
+      i++
+    } else if(incoming.type !== existing[i].type && incoming.price === existing[i].price && incoming.quantity > existing[i].quantity){
+      incoming.quantity = (incoming.quantity - existing[i].quantity)
+      // existing[i].type ='sell'
+      existing.splice(i, 1)
+      
+      // ex.reverse()
+      // balanceBook(existing)
+      // balanceBook(existing) 
+      // console.log(existing)
+      //   console.log('+++++++')
+      //   // console.log(incoming)
+      i++
+    }
   }
-  // const sameIndex = ex.findIndex((order) => { // only find incoming price === existing price  && incoming type !== existing type
-  //   return incoming.price === order.price && incoming.type !== order.type
-  // })
 
-  for(let i = 0; i < ex.length; i++) {
-    if (ex[i].price !== incoming.price || ex[i].type === incoming.type)  {
-      ex.push(incoming)
-      return ex
-    } else if(ex[i].quantity === incoming.quantity && ex[i].type !== incoming.price){
-      ex.splice(ex[i].length, 1)
-    }
-    
-     
-      
-    }
-    return ex
-    
-    // if(ex.quantity[0] > incoming.quantity) {
-    //   ex.quantity = ex.quantity -incoming.quantity
-
-    // }
+   
+  if (existing.length !== 0 && incoming === 0) {
+    // existing.reverse()
+    newBook.push(...existing)
+  } else if (existing.length === 0 && incoming !== 0) {
+    newBook.push(incoming)
   
+  } else if (existing.length !== 0 && incoming !== 0) {
+    newBook.push(...existing)
+    // existing.reverse()
+    newBook.push(incoming)
+    
   }
-
-
-
+  return newBook  
 }
 
 
+// if(ex.quantity[0] > incoming.quantity) {
+//   existing.quantity = existing.quantity -incoming.quantity
 
+// }
 
-
-
+  
 
 
 module.exports = reconcileOrder
+
